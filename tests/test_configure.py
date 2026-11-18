@@ -10,7 +10,7 @@ import unittest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location('configure', ROOT / 'clash-chain-proxy/scripts/configure.py')
+spec = importlib.util.spec_from_file_location('configure', ROOT / 'scripts/configure.py')
 m = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(m)
 
@@ -109,7 +109,7 @@ class ConfigurationTest(unittest.TestCase):
             subs.append(sub)
         (self.directory / 'profiles.yaml').write_text(yaml.safe_dump({'items': subs, 'current': 'sub7'}))
         before = {p: p.read_bytes() for p in self.directory.rglob('*') if p.is_file()}
-        result = subprocess.run(['python3', str(ROOT / 'clash-chain-proxy/scripts/configure.py'),
+        result = subprocess.run(['python3', str(ROOT / 'scripts/configure.py'),
                                  '--dir', str(self.directory), '--list-configured'],
                                 capture_output=True, text=True, check=True)
         data = json.loads(result.stdout)
@@ -144,7 +144,7 @@ class ConfigurationTest(unittest.TestCase):
 
     def test_scan_rejects_write_and_restore_flags(self):
         for extra in (['--apply'], ['--restore', 'missing'], ['--list']):
-            result = subprocess.run(['python3', str(ROOT / 'clash-chain-proxy/scripts/configure.py'),
+            result = subprocess.run(['python3', str(ROOT / 'scripts/configure.py'),
                                      '--dir', str(self.directory), '--list-configured'] + extra,
                                     capture_output=True, text=True)
             self.assertEqual(result.returncode, 1)
