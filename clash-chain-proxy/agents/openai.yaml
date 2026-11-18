@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clash 链式代理"
+  short_description: "为 Clash Verge 配置链式代理，默认附带 Claude 分流规则并支持自定义追加"
+  default_prompt: "使用 $clash-chain-proxy 帮我配置链式代理，先预览变更。"
