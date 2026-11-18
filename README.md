@@ -2,6 +2,41 @@
 
 为 **Clash Verge Rev** 选定订阅配置 SOCKS5 链式代理的 Agent Skill 与命令行配置工具。默认附带 Claude 分流规则，支持客户自行填写或配置 SOCKS5 连接信息、追加自定义分流规则、只读变更预览、扫描已配置订阅、自动备份与安全还原。
 
+## 效果示意
+
+```mermaid
+flowchart LR
+    subgraph Client["本地设备"]
+        App["应用 / 浏览器 / Claude Code"]
+    end
+
+    subgraph Clash["Clash Verge Rev"]
+        direction TB
+        Rules{"分流规则"}
+        GroupMyIP["代理组: MyIP<br/>(选择 MyAI)"]
+        GroupUpstream["订阅上游代理组<br/>(机场常用节点)"]
+        NodeMyAI["SOCKS5 节点: MyAI<br/>(dialer-proxy = 上游代理组)"]
+    end
+
+    subgraph External["外部服务与出口"]
+        SOCKS5Server["落地 SOCKS5 代理<br/>(家宽 / 原生固定 IP)"]
+        TargetClaude["Claude / Anthropic 目标服务<br/>(识别出口为 SOCKS5 固定 IP)"]
+    end
+
+    App --> Rules
+    Rules -->|匹配 Claude / 自定义规则| GroupMyIP
+    GroupMyIP --> NodeMyAI
+    NodeMyAI -.->|通过 dialer-proxy| GroupUpstream
+    GroupUpstream --> SOCKS5Server
+    SOCKS5Server --> TargetClaude
+```
+
+| 1. 编辑节点填写落地代理 | 2. 代理组选择链路生效 | 3. Claude 出口 IP 验证 |
+| :---: | :---: | :---: |
+| ![编辑节点填写 SOCKS5 连接信息](docs/images/clash-edit-node-socks5.png) | ![代理组选择 MyIP 与上游组](docs/images/clash-proxies-group-status.png) | ![Claude AI 出口 IP 与可用性检测](docs/images/claude-ip-test-result.png) |
+
+---
+
 ## 核心特性
 
 - **标准链式代理拓扑**：自动为目标订阅注入 SOCKS5 节点 `MyAI`（设置 `dialer-proxy` 指向订阅首个代理组）以及 `select` 选择组 `MyIP`（可选 `MyAI` 或上游代理组），链路为：
@@ -32,6 +67,11 @@ clash-chain-proxy/                # 仓库根目录（可直接作为 Skill 目�
 ├── assets/
 │   ├── claude-rules.yaml         # 内置 Claude 分流规则集
 │   └── user-config.example.yaml  # 用户配置文件模板
+├── docs/
+│   └── images/                   # 界面截图与结果示意图
+│       ├── clash-edit-node-socks5.png      # 节点高级编辑填写截图
+│       ├── clash-proxies-group-status.png  # 代理组状态截图
+│       └── claude-ip-test-result.png       # 出口 IP 检测通过截图
 ├── scripts/
 │   └── configure.py              # 核心配置、扫描、备份与还原 CLI 脚本
 ├── tools/
@@ -89,7 +129,7 @@ python3 scripts/configure.py --subscription "<UID或订阅名>" --prepare --appl
 
 写入后，在 Clash Verge Rev 中：
 1. 进入左侧 **订阅**，右键目标订阅选择 **编辑节点** → 右上角 **高级**。
-2. 在 `prepend` 中找到名为 `MyAI` 的节点，填入 `server`、`port`、`username`、`password`（无认证可留空后两项）并保存。
+2. 在 `prepend` 中找到名为 `MyAI`（或截图所示示例）的节点，填入 `server`、`port`、`username`、`password`（无认证可留空后两项）并保存。
 3. 重新点击激活该订阅，在代理页确认 `MyIP → MyAI`，并在上游代理组选择可用节点。
 
 #### 3. 通过外部配置文件写入连接信息或追加规则
@@ -141,7 +181,7 @@ python3 scripts/configure.py --restore "<备份编号>" --apply
 
 #### 5. 出口验证
 
-激活订阅后，在本机浏览器打开 `https://ip.net.coffee/claude/`，并在 Clash Verge Rev 连接记录中确认请求实际经过 `MyIP → MyAI`。
+激活订阅后，在本机浏览器打开 `https://ip.net.coffee/claude/`，并在 Clash Verge Rev 连接记录中确认请求实际经过 `MyIP → MyAI`，且检测页面显示的出口 IP 为你配置的落地 SOCKS5 固定 IP。
 
 ---
 
@@ -161,4 +201,4 @@ python3 -m unittest discover -s tests -v
 python3 tools/package.py
 ```
 
-打包脚本仅收录运行时所需的 Skill 核心文件，会自动排除 `README.md`、`tests/`、`tools/`、`dist/` 以及 `__pycache__` 等缓存文件。
+打包脚本仅收录运行时所需的 Skill 核心文件，会自动排除 `README.md`、`docs/`、`tests/`、`tools/`、`dist/` 以及 `__pycache__` 等缓存文件。
