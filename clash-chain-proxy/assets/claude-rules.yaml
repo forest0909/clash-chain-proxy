@@ -1,0 +1,27 @@
+- DOMAIN-SUFFIX,anthropic.com,MyIP
+- DOMAIN-SUFFIX,claude.ai,MyIP
+- DOMAIN-SUFFIX,claude.com,MyIP
+- DOMAIN-SUFFIX,claude.app,MyIP
+- DOMAIN-SUFFIX,clau.de,MyIP
+- DOMAIN-SUFFIX,claudemcpclient.com,MyIP
+- DOMAIN-SUFFIX,claudemcpcontent.com,MyIP
+- DOMAIN-SUFFIX,claudeusercontent.com,MyIP
+- DOMAIN,servd-anthropic-website.b-cdn.net,MyIP
+- DOMAIN,anthropic.com.cdn.cloudflare.net,MyIP
+- DOMAIN,anthropic.auth0.com,MyIP
+- DOMAIN,anthropic-com.ghost.io,MyIP
+- DOMAIN,http-intake.logs.us5.datadoghq.com,MyIP
+- DOMAIN,browser-intake-us5-datadoghq.com,MyIP
+- IP-CIDR,160.79.104.0/23,MyIP,no-resolve
+- IP-CIDR6,2607:6bc0::/48,MyIP,no-resolve
+- PROCESS-NAME,Claude,MyIP
+- PROCESS-NAME,Claude Helper,MyIP
+- PROCESS-NAME,Claude Helper (GPU),MyIP
+- PROCESS-NAME,Claude Helper (Plugin),MyIP
+- PROCESS-NAME,Claude Helper (Renderer),MyIP
+- PROCESS-NAME,claude,MyIP
+- PROCESS-NAME,Claude Code,MyIP
+- PROCESS-NAME,Claude Code Helper,MyIP
+- DOMAIN-SUFFIX,sentry.io,MyIP
+- DOMAIN-SUFFIX,statsigapi.net,MyIP
+- DOMAIN,ip.net.coffee,MyIP
