@@ -111,7 +111,26 @@ clash-chain-proxy/                # 仓库根目录（可直接作为 Skill 目�
 1. **直接导入打包文件**：使用 [`dist/clash-chain-proxy.skill`](dist/clash-chain-proxy.skill) 安装到支持 `.skill` 的 AI Agent 客户端。
 2. **源码目录安装**：将本仓库直接克隆或软链接到你的 Skills 目录（例如 `~/.agents/skills/clash-chain-proxy` 或对应客户端的 skills 目录），Agent 会自动读取根目录下的 [`SKILL.md`](SKILL.md)。
 
-### 方式二：作为独立 CLI 工具运行
+### 方式二：免安装，用提示词驱动任意 Agent
+
+如果不想在本地安装 Skill，只要你使用的 AI Agent 具备终端执行能力（如 Claude Code、Cursor、Codex、Antigravity 等），直接把下面这段提示词复制发给它，即可临时拉取并按规范完成配置：
+
+```text
+请帮我为本机的 Clash Verge Rev 配置 SOCKS5 链式代理（默认含 Claude 分流规则），或帮我向已有链式代理追加分流规则。我不想在本地永久安装 Skill，请你按以下方式临时加载并执行：
+
+1. 将仓库浅克隆到临时目录（如已有则更新）：
+   git clone --depth 1 https://github.com/forest0909/clash-chain-proxy.git /tmp/clash-chain-proxy
+2. 完整阅读 `/tmp/clash-chain-proxy/SKILL.md`，在本次对话中严格按照该文档的规范、命令参数、交互步骤和安全限制执行所有操作。
+3. 所有脚本调用均使用 `/tmp/clash-chain-proxy/scripts/configure.py`；先检查 Python 3 和 PyYAML 是否可用，若缺少依赖先征求我同意或使用虚拟环境，不要破坏系统 Python。
+4. 严格遵守安全边界：
+   - 首次配置先运行 `--list` 列出全部订阅编号让我选择；如果是追加规则，先运行 `--list-configured` 筛选已有链式代理的订阅。
+   - 未经我确认不写入配置，不主动索取或输出我的 SOCKS5 账号密码、订阅链接，不擅自添加 `--adopt-existing`，不更改代理模式、DNS、TUN 或 `profiles.yaml`。
+5. 全部配置并验证完成后，询问我是否删除 `/tmp/clash-chain-proxy` 临时目录。
+
+现在请先拉取仓库并阅读 `SKILL.md`，然后开始第一步的只读扫描，把候选订阅列表发给我选择。
+```
+
+### 方式三：作为独立 CLI 工具运行
 
 脚本默认自动探测常见操作系统下的 Clash Verge Rev 配置目录（`io.github.clash-verge-rev.clash-verge-rev`）：
 - macOS：`~/Library/Application Support/io.github.clash-verge-rev.clash-verge-rev`
